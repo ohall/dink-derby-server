@@ -15,7 +15,6 @@ paths:
       description: Initiates the OAuth2 flow for Google SSO.
       responses:
         '302':
-        '302':
           description: Redirect to Google SSO for authentication
 
   /auth/google/callback:
