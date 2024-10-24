@@ -1,354 +1,181 @@
 openapi: 3.0.0
 info:
-  title: Fishing Derby App API
-  description: API for managing fishing derbies, including user accounts, derby creation, joining derbies, posting results, and viewing leaderboards, with Google OAuth2-based authentication.
+  title: Fishing Derby API
+  description: A REST API for managing users, derbies, catches, and fishing locations in a fishing competition system.
   version: 1.0.0
-
 servers:
-  - url: https://api.fishingderbyapp.com
-    description: Production server
-
+  - url: http://localhost:3000
 paths:
-  /auth/google:
+  /api/users:
     get:
-      summary: Login or register using Google SSO
-      description: Initiates the OAuth2 flow for Google SSO.
-      responses:
-        '302':
-          description: Redirect to Google SSO for authentication
-
-  /auth/google/callback:
-    get:
-      summary: Google OAuth2 callback
-      description: Endpoint to handle Google OAuth2 callback after the user authorizes the app.
-      parameters:
-        - name: code
-          in: query
-          required: true
-          description: Authorization code from Google.
-          schema:
-            type: string
+      summary: Get all users
       responses:
         '200':
-          description: Successful login or registration with Google
+          description: A list of users
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  token:
-                    type: string
-                  user_id:
-                    type: string
-
-  /users/{userId}:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+    post:
+      summary: Create a new user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+      responses:
+        '201':
+          description: User created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+  /api/users/{id}:
     get:
-      summary: Get user profile
+      summary: Get user by ID
       parameters:
-        - name: userId
+        - name: id
           in: path
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: User profile information
+          description: User details
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  id:
-                    type: string
-                  username:
-                    type: string
-                  email:
-                    type: string
-                  derbies_created:
-                    type: array
-                    items:
-                      type: string
-                  derbies_joined:
-                    type: array
-                    items:
-                      type: string
-
-  /derbies:
+                $ref: '#/components/schemas/User'
+    put:
+      summary: Update a user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewUser'
+      responses:
+        '200':
+          description: User updated
+    delete:
+      summary: Delete a user
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: User deleted
+  /api/derbies:
+    get:
+      summary: Get all derbies
+      responses:
+        '200':
+          description: A list of derbies
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Derby'
     post:
       summary: Create a new derby
-      security:
-        - googleOAuth: []
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                name:
-                  type: string
-                location:
-                  type: string
-                start_time:
-                  type: string
-                  format: date-time
-                end_time:
-                  type: string
-                  format: date-time
-                rules:
-                  type: string
-              required:
-                - name
-                - location
-                - start_time
-                - end_time
+              $ref: '#/components/schemas/NewDerby'
       responses:
-        '200':
-          description: Derby created successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  derby_id:
-                    type: string
-
-  /derbies/{derbyId}/join:
-    post:
-      summary: Join a derby
-      security:
-        - googleOAuth: []
-      parameters:
-        - name: derbyId
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                user_id:
-                  type: string
-              required:
-                - user_id
-      responses:
-        '200':
-          description: Successfully joined the derby
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-                  derby_id:
-                    type: string
-
-  /derbies/{derbyId}:
+        '201':
+          description: Derby created
+  /api/derbies/{id}/catches:
     get:
-      summary: Get derby details
+      summary: Get all catches in a derby
       parameters:
-        - name: derbyId
+        - name: id
           in: path
           required: true
           schema:
             type: string
       responses:
         '200':
-          description: Derby details and leaderboard
+          description: A list of catches
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  derby_id:
-                    type: string
-                  name:
-                    type: string
-                  location:
-                    type: string
-                  start_time:
-                    type: string
-                    format: date-time
-                  end_time:
-                    type: string
-                    format: date-time
-                  participants:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        user_id:
-                          type: string
-                        username:
-                          type: string
-                  leaderboard:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        user_id:
-                          type: string
-                        username:
-                          type: string
-                        score:
-                          type: number
-                        fish_species:
-                          type: string
-                        fish_weight:
-                          type: number
-
-  /derbies/{derbyId}/results:
-    post:
-      summary: Post derby results
-      security:
-        - googleOAuth: []
-      parameters:
-        - name: derbyId
-          in: path
-          required: true
-          schema:
-            type: string
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                user_id:
-                  type: string
-                fish_species:
-                  type: string
-                fish_weight:
-                  type: number
-              required:
-                - user_id
-                - fish_species
-                - fish_weight
-      responses:
-        '200':
-          description: Result posted successfully
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
-
-  /derbies/{derbyId}/leaderboard:
-    get:
-      summary: Get derby leaderboard
-      parameters:
-        - name: derbyId
-          in: path
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Derby leaderboard
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  leaderboard:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        user_id:
-                          type: string
-                        username:
-                          type: string
-                        fish_species:
-                          type: string
-                        fish_weight:
-                          type: number
-                        rank:
-                          type: integer
-
-  /derbies/search:
-    get:
-      summary: Search derbies by location
-      parameters:
-        - name: location
-          in: query
-          required: true
-          schema:
-            type: string
-      responses:
-        '200':
-          description: Search results for derbies
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  derbies:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        derby_id:
-                          type: string
-                        name:
-                          type: string
-                        location:
-                          type: string
-                        start_time:
-                          type: string
-                          format: date-time
-
-  /notifications:
-    post:
-      summary: Send notification to users
-      security:
-        - googleOAuth: []
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                user_id:
-                  type: string
-                message:
-                  type: string
-              required:
-                - user_id
-                - message
-      responses:
-        '200':
-          description: Notification sent
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  message:
-                    type: string
+                type: array
+                items:
+                  $ref: '#/components/schemas/Catch'
 
 components:
-  securitySchemes:
-    googleOAuth:
-      type: oauth2
-      flows:
-        authorizationCode:
-          authorizationUrl: https://accounts.google.com/o/oauth2/auth
-          tokenUrl: https://oauth2.googleapis.com/token
-          scopes:
-            openid: OpenID Connect
-            email: Access to user's email
-            profile: Access to user's profile information
+  schemas:
+    User:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+    NewUser:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+    Derby:
+      type: object
+      properties:
+        _id:
+          type: string
+        name:
+          type: string
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+    NewDerby:
+      type: object
+      properties:
+        name:
+          type: string
+        start_date:
+          type: string
+          format: date
+        end_date:
+          type: string
+          format: date
+    Catch:
+      type: object
+      properties:
+        _id:
+          type: string
+        species:
+          type: string
+        weight:
+          type: number
+        location:
+          $ref: '#/components/schemas/Location'
+    Location:
+      type: object
+      properties:
+        location_id:
+          type: string
+        name:
+          type: string
