@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Fishing Derby API
+  title: Dink Derby API
   description: A REST API for managing users, derbies, catches, and fishing locations in a fishing competition system.
   version: 1.0.0
 servers:
