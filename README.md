@@ -131,11 +131,11 @@ This is the API server for the Fishing Derby App, which allows users to manage f
 ![image](https://github.com/user-attachments/assets/88a969b0-6a4d-47d2-8399-33966d37b0e8)
 
 
+## MongoDB
+[Dev DB Explorer](https://cloud.mongodb.com/v2/671b76a35e27c50df84af397#/clusters)
+
 ## Contributing
 
 Contributions are welcome! Please fork the repository and submit a pull request for any changes.
 
-## License
-
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
