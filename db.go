@@ -44,6 +44,24 @@ func (s *MongoDBService) FindDocument(database, collection string, filter interf
 	return result, nil
 }
 
+func (s *MongoDBService) UpdateDocument(database, collection string, filter, update interface{}) (*mongo.UpdateResult, error) {
+	coll := s.client.Database(database).Collection(collection)
+	result, err := coll.UpdateOne(context.TODO(), filter, update)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
+func (s *MongoDBService) DeleteDocument(database, collection string, filter interface{}) (*mongo.DeleteResult, error) {
+	coll := s.client.Database(database).Collection(collection)
+	result, err := coll.DeleteOne(context.TODO(), filter)
+	if err != nil {
+		return nil, err
+	}
+	return result, nil
+}
+
 func (s *MongoDBService) Close() error {
 	return s.client.Disconnect(context.TODO())
 }

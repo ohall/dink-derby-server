@@ -6,7 +6,6 @@ import (
 )
 
 type Catch struct {
-	ID       string   `json:"id"`
 	UserID   string   `json:"user_id"`
 	DerbyID  string   `json:"derby_id"`
 	Species  string   `json:"species"`
