@@ -44,6 +44,15 @@ func (s *MongoDBService) FindDocument(database, collection string, filter interf
 	return result, nil
 }
 
+func (s *MongoDBService) FindDocuments(database, collection string, filter interface{}) (*mongo.Cursor, error) {
+	coll := s.client.Database(database).Collection(collection)
+	cursor, err := coll.Find(context.TODO(), filter)
+	if err != nil {
+		return nil, err
+	}
+	return cursor, nil
+}
+
 func (s *MongoDBService) UpdateDocument(database, collection string, filter, update interface{}) (*mongo.UpdateResult, error) {
 	coll := s.client.Database(database).Collection(collection)
 	result, err := coll.UpdateOne(context.TODO(), filter, update)

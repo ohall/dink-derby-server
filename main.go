@@ -20,9 +20,10 @@ func routes() *mux.Router {
 	router.HandleFunc("/api/users/{id}", updateUser).Methods("PUT")
 	router.HandleFunc("/api/users/{id}", deleteUser).Methods("DELETE")
 
-	// // Derby routes
-	// router.HandleFunc("/api/derbies", getDerbies).Methods("GET")
-	// router.HandleFunc("/api/derbies", createDerby).Methods("POST")
+	// Derby routes
+	router.HandleFunc("/api/derbies/angler/{id}", getDerbiesByAngler).Methods("GET")
+	router.HandleFunc("/api/derbies", createDerby).Methods("POST")
+	router.HandleFunc("/api/derby/{id}", getDerby).Methods("GET")
 
 	// // Catch routes
 	// router.HandleFunc("/api/catches", getCatches).Methods("GET")
