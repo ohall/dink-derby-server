@@ -1,2 +1,2 @@
 go fmt ./
-go run .
+air run .

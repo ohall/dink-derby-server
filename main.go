@@ -7,18 +7,19 @@ import (
 
 	"github.com/gorilla/mux"
 	"github.com/joho/godotenv"
+	"github.com/rs/zerolog"
 )
 
 func routes() *mux.Router {
 	router := mux.NewRouter()
 	//TODO: Add auth, goroutines, and error handling
 
-	// User routes
-	router.HandleFunc("/api/users", getUsers).Methods("GET")
-	router.HandleFunc("/api/users", createUser).Methods("POST")
-	router.HandleFunc("/api/users/{id}", getUser).Methods("GET")
-	router.HandleFunc("/api/users/{id}", updateUser).Methods("PUT")
-	router.HandleFunc("/api/users/{id}", deleteUser).Methods("DELETE")
+	// Angler routes
+	router.HandleFunc("/api/anglers", getAnglers).Methods("GET")
+	router.HandleFunc("/api/anglers", createAngler).Methods("POST")
+	router.HandleFunc("/api/anglers/{id}", getAngler).Methods("GET")
+	router.HandleFunc("/api/anglers/{id}", updateAngler).Methods("PUT")
+	router.HandleFunc("/api/anglers/{id}", deleteAngler).Methods("DELETE")
 
 	// Derby routes
 	router.HandleFunc("/api/derbies/angler/{id}", getDerbiesByAngler).Methods("GET")
@@ -41,6 +42,9 @@ var db *MongoDBService
 func main() {
 	err := godotenv.Load(".env")
 
+	zerolog.SetGlobalLevel(zerolog.InfoLevel)
+	zerolog.TimeFieldFormat = zerolog.TimeFormatUnix
+
 	if err != nil {
 		log.Fatalf("Error loading .env file")
 	}
@@ -54,6 +58,6 @@ func main() {
 
 	router := routes()
 
-	log.Println("Server started on port 3000")
-	log.Fatal(http.ListenAndServe("localhost:3000", router))
+	LogInfo("Server started on port 3000")
+	http.ListenAndServe("localhost:3000", router)
 }

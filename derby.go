@@ -52,7 +52,7 @@ func getDerby(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if derbyResult.Err() == mongo.ErrNoDocuments {
-		http.NotFound(w, r)
+		NotFoundHandler(w, r)
 		return
 	}
 
@@ -92,8 +92,7 @@ func getDerbiesByAngler(w http.ResponseWriter, r *http.Request) {
 	}
 	log.Println("derbies", derbies)
 	if len(derbies) == 0 {
-		w.WriteHeader(http.StatusNotFound)
-		json.NewEncoder(w).Encode(map[string]string{"message": "No derbies found for this angler"})
+		NotFoundHandler(w, r)
 		return
 	}
 	json.NewEncoder(w).Encode(derbies)
