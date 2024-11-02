@@ -16,8 +16,12 @@ type Derby struct {
 	Name       string               `json:"name"`
 	StartDate  string               `json:"start_date"`
 	EndDate    string               `json:"end_date"`
+	Image      string               `json:"image"`
+	Active     bool                 `json:"active"`
+	Location   primitive.ObjectID   `json:"location"`
+	Winner     primitive.ObjectID   `json:"winner"`
 	Anglers    []primitive.ObjectID `json:"anglers,omitempty"`
-	TopCatches []Catch              `json:"top_catches,omitempty"`
+	Catches    []primitive.ObjectID `json:"catches,omitempty"`
 }
 
 func createDerby(w http.ResponseWriter, r *http.Request) {

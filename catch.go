@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 	"go.mongodb.org/mongo-driver/bson"
@@ -12,10 +13,14 @@ import (
 
 type Catch struct {
 	AnglerID primitive.ObjectID `json:"angler_id"`
-	DerbyID  string             `json:"derby_id"`
-	Species  string             `json:"species"`
+	DerbyID  primitive.ObjectID `json:"derby_id"`
+	Location primitive.ObjectID `json:"location"`
+	Date     time.Time          `json:"date"`
 	Weight   float64            `json:"weight"`
-	Location Location           `json:"location"`
+	Length   float64            `json:"length"`
+	Species  string             `json:"species"`
+	Notes    string             `json:"notes"`
+	Image    string             `json:"image"`
 }
 
 func getCatches(w http.ResponseWriter, r *http.Request) {

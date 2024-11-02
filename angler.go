@@ -17,11 +17,25 @@ type Angler struct {
 	Catches []Catch `json:"catches,omitempty"`
 }
 
-var anglers []Angler
-
-func getAnglers(w http.ResponseWriter, r *http.Request) {
+func getAnglersByDerby(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
-	json.NewEncoder(w).Encode(anglers)
+	params := mux.Vars(r)
+	id := params["id"]
+	objectID, err := primitive.ObjectIDFromHex(id)
+	if err != nil {
+		http.Error(w, "Invalid derby ID", http.StatusBadRequest)
+		LogHTTPError(err, r)
+		return
+	}
+
+	anglersResult, err := db.FindDocument("DinkDerby", "anglers", bson.M{"derbies": objectID})
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		LogHTTPError(err, r)
+		return
+	}
+	LogHTTPInfo("Anglers retrieved by derby", r)
+	json.NewEncoder(w).Encode(anglersResult)
 }
 
 func createAngler(w http.ResponseWriter, r *http.Request) {

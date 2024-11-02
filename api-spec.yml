@@ -22,6 +22,29 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Angler'
+  /api/anglers/derby/{id}:
+    get:
+      summary: Get anglers by derby ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: objectid
+      responses:
+        '200':
+          description: Anglers retrieved by derby
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Angler'
+        '400':
+          description: Invalid derby ID
+        '404':
+          description: No anglers found for the given derby ID
   /api/anglers/{id}:
     get:
       summary: Get angler by ID
@@ -31,6 +54,7 @@ paths:
           required: true
           schema:
             type: string
+            format: objectid
       responses:
         '200':
           description: Angler details
@@ -67,17 +91,6 @@ paths:
         '204':
           description: Angler deleted
   /api/derbies:
-    get:
-      summary: Get all derbies
-      responses:
-        '200':
-          description: A list of derbies
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Derby'
     post:
       summary: Create a new derby
       requestBody:
@@ -85,29 +98,68 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NewDerby'
+              $ref: '#/components/schemas/Derby'
       responses:
         '201':
           description: Derby created
-  /api/derbies/{id}/catches:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Derby'
+        '500':
+          description: Internal server error
+  /api/derby/{id}:
     get:
-      summary: Get all catches in a derby
+      summary: Get derby by ID
       parameters:
         - name: id
           in: path
           required: true
           schema:
             type: string
+            format: objectid
       responses:
         '200':
-          description: A list of catches
+          description: Derby details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Derby'
+        '400':
+          description: Invalid derby ID
+        '404':
+          description: Derby not found
+        '500':
+          description: Internal server error
+  /api/derbies/angler/{id}:
+    get:
+      summary: Get derbies by angler ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: objectid
+          description: The ID of the angler
+      responses:
+        '200':
+          description: A list of derbies the angler is participating in
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Catch'
-  /api/derbies/angler/{id}:
+                  $ref: '#/components/schemas/Derby'
+        '400':
+          description: Invalid angler ID
+        '404':
+          description: No derbies found for the given angler ID
+        '500':
+          description: Internal server error
+
+
+
     get:
       summary: Get derbies by angler ID
       parameters:

@@ -15,7 +15,7 @@ func routes() *mux.Router {
 	//TODO: Add auth, goroutines, and error handling
 
 	// Angler routes
-	router.HandleFunc("/api/anglers", getAnglers).Methods("GET")
+	router.HandleFunc("/api/anglers/derby/{id}", getAnglersByDerby).Methods("GET")
 	router.HandleFunc("/api/anglers", createAngler).Methods("POST")
 	router.HandleFunc("/api/anglers/{id}", getAngler).Methods("GET")
 	router.HandleFunc("/api/anglers/{id}", updateAngler).Methods("PUT")
@@ -26,13 +26,13 @@ func routes() *mux.Router {
 	router.HandleFunc("/api/derbies", createDerby).Methods("POST")
 	router.HandleFunc("/api/derby/{id}", getDerby).Methods("GET")
 
-	// // Catch routes
-	// router.HandleFunc("/api/catches", getCatches).Methods("GET")
-	// router.HandleFunc("/api/catches", createCatch).Methods("POST")
+	// Catch routes
+	router.HandleFunc("/api/catches", getCatches).Methods("GET")
+	router.HandleFunc("/api/catches", createCatch).Methods("POST")
 
-	// // Location routes
-	// router.HandleFunc("/api/locations", getLocations).Methods("GET")
-	// router.HandleFunc("/api/locations", createLocation).Methods("POST")
+	// Location routes
+	router.HandleFunc("/api/locations", getLocations).Methods("GET")
+	router.HandleFunc("/api/locations", createLocation).Methods("POST")
 
 	return router
 }
